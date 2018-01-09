@@ -19,15 +19,27 @@ class App extends Component {
 
 // Helper function for rendering blocks
   renderBlock(i) {
-    return <Block value={i} />
+    return <Block value={this.state.blocks[i]} />
   }
 
 // Helper function for requests
-  requestCall() {
-
+  requestCall(url) {
+    const request = require('request');
+    request({
+      uri: url,
+      method: 'GET'
+    }, function(error, response, body){
+      if(error) {
+        this.state.blocks.push("OTHER");
+      } else if (response.statusCode == 200) {
+        this.state.blocks.push("UP");
+      }
+    });
   }
 
   render() {
+    requestCall("httpstat.us/200");
+
     return (
       <div className="App">
         <div className="App-header">
@@ -38,7 +50,9 @@ class App extends Component {
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
         <div className="Block-container">
-          {this.renderBlock(0)}
+          for (let i=0; i<this.state.blocks.length; i++) {
+            {this.renderBlock(i)}
+          }
         </div>
       </div>
     );
