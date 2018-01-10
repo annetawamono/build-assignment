@@ -12,24 +12,30 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      // to store the state of each block
-      blocks: Array(5).fill(null),
+      history: [{
+        // to store the state of each block
+        blocks: Array(5).fill(null),
+      }],
     };
     setInterval(function(){
-      alert("Check");
+      // alert("Check");
       this.requestCall("http://httpstat.us/418", 0);
     }.bind(this), 300000);
   }
 
 // Helper function for rendering blocks
   renderBlock(i) {
-    return <Block value={this.state.blocks[i]} />
+    const history = this.state.history;
+    const current = history[history.length - 1];
+    return <Block value={current.blocks[i]} />
   }
 
 // Helper function for requests
   requestCall(url, i) {
     const request = require('request');
-    const blocks = this.state.blocks.slice();
+    const history = this.state.history;
+    const current = history[history.length - 1];
+    const blocks = current.blocks.slice();
 
     request({
       uri: url,
@@ -42,22 +48,15 @@ class App extends Component {
       } else {
         blocks[i] = "DOWN";
       }
-      this.setState({blocks: blocks});
+      this.setState({
+        history: history.concat([{
+          blocks: blocks,
+        }]),
+      });
     }.bind(this));
   }
 
   render() {
-    // this.requestCall("http://httpstat.us/418", 0);
-
-    const blocks = this.state.blocks;
-    // const bl = blocks.map((i) => {
-    //   return (
-    //     <li>
-    //       {this.renderBlock(i)}
-    //     </li>
-    //   );
-    // });
-
     return (
       <div className="App">
         <div className="App-header">
