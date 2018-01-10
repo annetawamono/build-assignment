@@ -4,11 +4,13 @@ import './App.css';
 
 function Block(props) {
   return (
-    <div>
-      <button className="Block" onClick={() => props.onClick()}>{props.value}</button>
-      {props.previous != null &&
-        <p>Last response was {props.previous}</p>
-      }
+    <div className="Block">
+      <button onClick={() => props.onClick()}>{props.value}</button>
+      {props.previous === null ? (
+          <p>No previous response</p>
+        ) : (
+          <p>Last response was {props.previous}</p>
+        )}
     </div>
   );
 }
