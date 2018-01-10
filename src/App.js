@@ -4,7 +4,7 @@ import './App.css';
 
 function Block(props) {
   return (
-    <div className="Block">{props.value}</div>
+    <button className="Block">{props.value}</button>
   );
 }
 
@@ -13,7 +13,7 @@ class App extends Component {
     super(props);
     this.state = {
       // to store the state of each block
-      blocks: [],
+      blocks: Array(5).fill(null),
     };
   }
 
@@ -23,22 +23,34 @@ class App extends Component {
   }
 
 // Helper function for requests
-  requestCall(url) {
+  requestCall(url, i) {
     const request = require('request');
+    const blocks = this.state.blocks.slice();
+
     request({
       uri: url,
       method: 'GET'
-    }, function(error, response, body){
+    }, function(error, response, body) {
       if(error) {
-        this.state.blocks.push("OTHER");
+        blocks[i] = "OTHER";
       } else if (response.statusCode == 200) {
-        this.state.blocks.push("UP");
+        blocks[i] = "UP";
       }
-    });
+      this.setState({blocks: blocks});
+    }.bind(this));
   }
 
   render() {
-    requestCall("httpstat.us/200");
+    this.requestCall("http://httpstat.us/200", 0);
+
+    const blocks = this.state.blocks;
+    // const bl = blocks.map((i) => {
+    //   return (
+    //     <li>
+    //       {this.renderBlock(i)}
+    //     </li>
+    //   );
+    // });
 
     return (
       <div className="App">
@@ -50,9 +62,7 @@ class App extends Component {
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
         <div className="Block-container">
-          for (let i=0; i<this.state.blocks.length; i++) {
-            {this.renderBlock(i)}
-          }
+          {this.renderBlock(0)}
         </div>
       </div>
     );
