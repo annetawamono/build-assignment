@@ -5,7 +5,15 @@ import './App.css';
 function Block(props) {
   return (
     <div className="Block">
-      <button onClick={() => props.onClick()}>{props.value}</button>
+      <h3>Server: {props.name}</h3>
+      <button
+        onClick={() => props.onClick()}
+        className={props.value === "UP"
+            ? "up"
+            : (props.value === "DOWN"
+              ? "down"
+              : "other")}
+      >{props.value === null ? "Checking" : props.value}</button>
       {props.previous === null ? (
           <p>No previous response</p>
         ) : (
@@ -24,6 +32,13 @@ class App extends Component {
         blocks: Array(5).fill(null),
       }],
       prev: Array(5).fill(null),
+      urls: [
+        "https://test.cognition-app.com/api/status",
+        "https://ord.dev.stackworx.io/graphql",
+        "https://api.durf.dev.stackworx.io/graphql",
+        "https://prima.run/health",
+        "https://stackworx.io/"
+      ],
     };
     setInterval(function(){
       // alert("Check");
@@ -36,7 +51,9 @@ class App extends Component {
     const history = this.state.history;
     const current = history[history.length - 1];
     const prev = this.state.prev;
-    return <Block value={current.blocks[i]} previous={prev[i]} onClick={() => this.handleClick()} />
+    const urls = this.state.urls;
+
+    return <Block value={current.blocks[i]} previous={prev[i]} name={urls[i]} onClick={() => this.handleClick()} />
   }
 
   handleClick() {
