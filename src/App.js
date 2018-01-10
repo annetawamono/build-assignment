@@ -6,7 +6,9 @@ function Block(props) {
   return (
     <div>
       <button className="Block" onClick={() => props.onClick()}>{props.value}</button>
-      <p>Last response was {props.previous}</p>
+      {props.previous != null &&
+        <p>Last response was {props.previous}</p>
+      }
     </div>
   );
 }
