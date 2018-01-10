@@ -15,6 +15,10 @@ class App extends Component {
       // to store the state of each block
       blocks: Array(5).fill(null),
     };
+    setInterval(function(){
+      alert("Check");
+      this.requestCall("http://httpstat.us/418", 0);
+    }.bind(this), 300000);
   }
 
 // Helper function for rendering blocks
@@ -43,7 +47,7 @@ class App extends Component {
   }
 
   render() {
-    this.requestCall("http://httpstat.us/418", 0);
+    // this.requestCall("http://httpstat.us/418", 0);
 
     const blocks = this.state.blocks;
     // const bl = blocks.map((i) => {
