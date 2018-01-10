@@ -35,13 +35,15 @@ class App extends Component {
         blocks[i] = "OTHER";
       } else if (response.statusCode == 200) {
         blocks[i] = "UP";
+      } else {
+        blocks[i] = "DOWN";
       }
       this.setState({blocks: blocks});
     }.bind(this));
   }
 
   render() {
-    this.requestCall("http://httpstat.us/200", 0);
+    this.requestCall("http://httpstat.us/418", 0);
 
     const blocks = this.state.blocks;
     // const bl = blocks.map((i) => {
