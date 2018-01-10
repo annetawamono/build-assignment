@@ -58,6 +58,12 @@ class App extends Component {
     this.requestCall(urls[2], 2);
     this.requestCall(urls[3], 3);
     this.requestCall(urls[4], 4);
+
+    this.pushHistory();
+
+    setTimeout(function(){
+      this.init(urls);
+    }.bind(this), 300000);
   }
 
 // Helper function for rendering blocks
@@ -72,16 +78,29 @@ class App extends Component {
 
   handleClick() {
     const history = this.state.history;
+    if(history.length < 2) {
+      return;
+    }
     const prev = history[history.length - 2].blocks.slice();
     this.setState({
       prev: prev,
     });
   }
 
+// Helper function to add a new history object when all requests have been called
+  pushHistory() {
+    const history = this.state.history.slice();
+    this.setState({
+      history: history.concat({
+        blocks: Array(5).fill(null),
+      })
+    });
+  }
+
 // Helper function for requests
   requestCall(url, i) {
     const request = require('request');
-    const history = this.state.history;
+    const history = this.state.history.slice();
     const current = history[history.length - 1];
     const blocks = current.blocks.slice();
 
@@ -97,14 +116,15 @@ class App extends Component {
         // alert("DOWN");
         blocks[i] = "DOWN";
       }
+
+      history[history.length - 1].blocks = blocks;
+
       this.setState({
-        history: history.concat([{
-          blocks: blocks,
-        }]),
+        history: history,
       });
-      setTimeout(function(){
-        this.requestCall(url, i);
-      }.bind(this), 300000);
+      // setTimeout(function(){
+      //   this.requestCall(url, i);
+      // }.bind(this), 300000);
     }.bind(this));
   }
 
