@@ -40,10 +40,24 @@ class App extends Component {
         "https://stackworx.io/"
       ],
     };
-    setInterval(function(){
-      // alert("Check");
-      this.requestCall("http://httpstat.us/418", 0);
-    }.bind(this), 3000/*00*/);
+    // setInterval(function(){
+    //   const urls = this.state.urls;
+    //   this.requestCall(urls[0], 0);
+      // this.requestCall(urls[1], 1);
+      // this.requestCall(urls[2], 2);
+      // this.requestCall(urls[3], 3);
+      // this.requestCall(urls[4], 4);
+      // this.init(urls);
+    // }.bind(this), 30000/*0*/);
+    this.init(this.state.urls);
+  }
+
+  init(urls) {
+    this.requestCall(urls[0], 0);
+    this.requestCall(urls[1], 1);
+    this.requestCall(urls[2], 2);
+    this.requestCall(urls[3], 3);
+    this.requestCall(urls[4], 4);
   }
 
 // Helper function for rendering blocks
@@ -80,6 +94,7 @@ class App extends Component {
       } else if (response.statusCode === 200) {
         blocks[i] = "UP";
       } else {
+        // alert("DOWN");
         blocks[i] = "DOWN";
       }
       this.setState({
@@ -87,6 +102,9 @@ class App extends Component {
           blocks: blocks,
         }]),
       });
+      setTimeout(function(){
+        this.requestCall(url, i);
+      }.bind(this), 300000);
     }.bind(this));
   }
 
@@ -102,6 +120,10 @@ class App extends Component {
         </p>
         <div className="Block-container">
           {this.renderBlock(0)}
+          {this.renderBlock(1)}
+          {this.renderBlock(2)}
+          {this.renderBlock(3)}
+          {this.renderBlock(4)}
         </div>
       </div>
     );
