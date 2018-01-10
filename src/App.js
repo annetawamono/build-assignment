@@ -4,7 +4,10 @@ import './App.css';
 
 function Block(props) {
   return (
-    <button className="Block">{props.value}</button>
+    <div>
+      <button className="Block" onClick={() => props.onClick()}>{props.value}</button>
+      <p>Last response was {props.previous}</p>
+    </div>
   );
 }
 
@@ -16,18 +19,28 @@ class App extends Component {
         // to store the state of each block
         blocks: Array(5).fill(null),
       }],
+      prev: Array(5).fill(null),
     };
     setInterval(function(){
       // alert("Check");
       this.requestCall("http://httpstat.us/418", 0);
-    }.bind(this), 300000);
+    }.bind(this), 3000/*00*/);
   }
 
 // Helper function for rendering blocks
   renderBlock(i) {
     const history = this.state.history;
     const current = history[history.length - 1];
-    return <Block value={current.blocks[i]} />
+    const prev = this.state.prev;
+    return <Block value={current.blocks[i]} previous={prev[i]} onClick={() => this.handleClick()} />
+  }
+
+  handleClick() {
+    const history = this.state.history;
+    const prev = history[history.length - 2].blocks.slice();
+    this.setState({
+      prev: prev,
+    });
   }
 
 // Helper function for requests
@@ -43,7 +56,7 @@ class App extends Component {
     }, function(error, response, body) {
       if(error) {
         blocks[i] = "OTHER";
-      } else if (response.statusCode == 200) {
+      } else if (response.statusCode === 200) {
         blocks[i] = "UP";
       } else {
         blocks[i] = "DOWN";
