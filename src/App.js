@@ -76,17 +76,26 @@ class App extends Component {
     const prev = this.state.prev;
     const urls = this.state.urls;
 
-    return <Block value={current.blocks[i]} previous={prev[i]} name={urls[i]} onClick={() => this.handleClick()} />
+    return <Block value={current.blocks[i]} previous={prev[i]} name={urls[i]} onClick={() => this.handleClick(i)} />
   }
 
-  handleClick() {
-    const history = this.state.history;
-    if(history.length < 2) {
+  handleClick(i) {
+    // const history = this.state.history;
+    if(this.state.history.length < 2) {
       return;
     }
-    const prev = history[history.length - 2].blocks.slice();
-    this.setState({
-      prev: prev,
+    // const prev = history[history.length - 2].blocks.slice();
+    // this.setState({
+    //   prev: prev,
+    // });
+
+    this.setState((prevState) => {
+      const history = prevState.history.slice();
+      const newPrev = prevState.prev.slice();
+
+      newPrev[i] = history[history.length - 2].blocks[i];
+
+      return { 'prev': newPrev };
     });
   }
 
