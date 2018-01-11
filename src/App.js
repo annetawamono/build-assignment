@@ -34,22 +34,12 @@ class App extends Component {
       prev: Array(5).fill(null),
       urls: [
         "https://test.cognition-app.com/api/status",
-        "https://ord.dev.stackworx.io/graphql",
-        "https://api.durf.dev.stackworx.io/graphql",
+        "https://ord.dev.stackworx.io/health",
+        "https://api.durf.dev.stackworx.io/health",
         "https://prima.run/health",
         "https://stackworx.io/"
       ],
     };
-    // setInterval(function(){
-    //   const urls = this.state.urls;
-    //   this.requestCall(urls[0], 0);
-      // this.requestCall(urls[1], 1);
-      // this.requestCall(urls[2], 2);
-      // this.requestCall(urls[3], 3);
-      // this.requestCall(urls[4], 4);
-      // this.init(urls);
-    // }.bind(this), 30000/*0*/);
-    this.init(this.state.urls);
   }
 
   init(urls) {
@@ -64,6 +54,19 @@ class App extends Component {
     setTimeout(function(){
       this.init(urls);
     }.bind(this), 300000);
+  }
+
+  componentDidMount() {
+        // setInterval(function(){
+    //   const urls = this.state.urls;
+    //   this.requestCall(urls[0], 0);
+      // this.requestCall(urls[1], 1);
+      // this.requestCall(urls[2], 2);
+      // this.requestCall(urls[3], 3);
+      // this.requestCall(urls[4], 4);
+      // this.init(urls);
+    // }.bind(this), 30000/*0*/);
+    this.init(this.state.urls);
   }
 
 // Helper function for rendering blocks
@@ -100,28 +103,32 @@ class App extends Component {
 // Helper function for requests
   requestCall(url, i) {
     const request = require('request');
-    const history = this.state.history.slice();
-    const current = history[history.length - 1];
-    const blocks = current.blocks.slice();
 
     request({
       uri: url,
-      method: 'GET'
+      method: 'GET',
     }, function(error, response, body) {
+      let result = null;
+
       if(error) {
-        blocks[i] = "OTHER";
+        result = "OTHER";
       } else if (response.statusCode === 200) {
-        blocks[i] = "UP";
+        result = "UP";
       } else {
         // alert("DOWN");
-        blocks[i] = "DOWN";
+        result = "DOWN";
       }
 
-      history[history.length - 1].blocks = blocks;
+      this.setState((prevState) => {
+        const newHistory = prevState.history.slice();
+        const current = newHistory[newHistory.length - 1];
 
-      this.setState({
-        history: history,
+        newHistory[newHistory.length - 1].blocks = current.blocks.slice();
+        newHistory[newHistory.length - 1].blocks[i] = result;
+
+        return { 'history': newHistory };
       });
+
       // setTimeout(function(){
       //   this.requestCall(url, i);
       // }.bind(this), 300000);
